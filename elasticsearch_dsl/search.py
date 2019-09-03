@@ -735,6 +735,24 @@ class Search(Request):
             )
         )
 
+    def validate(self, explain=False):
+        """
+        Execute the search and return an instance of ``Response`` wrapping all
+        the data.
+
+        :arg explain: if set to ``True``, consecutive calls will hit
+            ES, while cached result will be ignored. Defaults to `False`
+        """
+        es = get_connection(self._using)
+
+        return AttrDict(
+            es.validate_query(
+                index=self._index,
+                body=self.to_dict(),
+                **self._params
+            )
+        )
+
 
 class MultiSearch(Request):
     """
